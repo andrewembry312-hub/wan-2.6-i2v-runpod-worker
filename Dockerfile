@@ -21,9 +21,3 @@ RUN pip install --no-cache-dir -r requirements-runpod.txt
 COPY handler.py /workspace/handler.py
 
 CMD ["python", "-u", "handler.py"]
-
-LABEL maintainer="E-Labs AI Studio" description="Wan 2.6 I2V RunPod Worker"
-ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1
-WORKDIR /workspace
-COPY handler.py /workspace/handler.py
-CMD ["python", "-u", "handler.py"]
