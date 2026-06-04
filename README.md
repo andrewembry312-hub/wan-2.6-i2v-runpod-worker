@@ -1,17 +1,29 @@
-# elabs / Wan 2.6 I2V
+# elabs / Wan 2.6 Image-to-Video
 
-[![Run on RunPod](https://runpod.io/badge/runpod-hub)](https://runpod.io/console/hub)
+[![Deploy on RunPod](https://img.shields.io/badge/RunPod-Deploy-orange?logo=runpod)](https://console.runpod.io/hub)
+[![CUDA 12.4](https://img.shields.io/badge/CUDA-12.4-green)](https://developer.nvidia.com/cuda-toolkit)
+[![Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0)
 
-Wan 2.6 image-to-video generates smooth, high-quality videos from a single input image. Powered by the Wan 2.6 video diffusion model with weights baked into the Docker image — no network volume, no cold-download delays.
+**Image-to-video generation** with Wan 2.6. Animate any image with natural motion. Configurable duration (2-8 seconds), frame rate, and motion strength.
+
+![Wan I2V](https://pub-796a08821c1c483aaf5e274e0d03e350.r2.dev/hub-icons/wan-i2v.svg)
 
 ## Highlights
 
-- **Single image → video** — generate up to 8 seconds of smooth video from one image
-- **Configurable duration** — 2–8 seconds with fine-grained fps control
-- **Motion strength tuning** — adjust how much motion the model applies
-- **Seed control** — reproducible generations with fixed seeds
-- **Weights baked in** — no HF token, no gated access, no cold-download
-- **GPU**: requires ≥16 GB VRAM (RTX 4090, L40S, A6000+)
+- Single image to video -- animate any photo or illustration
+- 2-8 second output -- configurable duration
+- Natural motion -- smooth temporal consistency, no flickering
+- Motion strength control -- subtle to dramatic animation
+- Weights baked in -- fast cold start, no network volume
+
+## Quick Start
+
+```bash
+curl -X POST https://api.runpod.ai/v2/{ENDPOINT_ID}/run \
+  -H "Authorization: Bearer $RUNPOD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"input": {"image_base64": "<base64 PNG>", "prompt": "Camera slowly pans right", "duration_seconds": 4}}'
+```
 
 ## API
 
@@ -20,13 +32,11 @@ Wan 2.6 image-to-video generates smooth, high-quality videos from a single input
 ```json
 {
   "input": {
-    "image_base64": "<base64-encoded PNG/JPG input image>",
-    "prompt": "a serene mountain lake at sunrise, cinematic quality",
+    "image_base64": "<base64 PNG or JPG>",
+    "prompt": "Camera slowly pans right, cinematic",
     "duration_seconds": 4,
-    "fps": 16,
-    "height": 480,
-    "width": 832,
-    "motion_strength": 0.5,
+    "fps": 24,
+    "motion_strength": 0.8,
     "seed": -1
   }
 }
@@ -36,12 +46,12 @@ Wan 2.6 image-to-video generates smooth, high-quality videos from a single input
 
 ```json
 {
-  "video_base64": "<base64-encoded MP4 video>",
-  "prompt": "a serene mountain lake at sunrise, cinematic quality",
+  "video_base64": "<base64 MP4>",
+  "prompt": "Camera slowly pans right, cinematic",
   "duration_s": 4,
-  "fps": 16,
-  "seed": 42,
-  "wall_time_s": 12.5
+  "fps": 24,
+  "seed": 12345,
+  "wall_time_s": 45.0
 }
 ```
 
@@ -49,29 +59,29 @@ Wan 2.6 image-to-video generates smooth, high-quality videos from a single input
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `image_base64` | string | **required** | Base64-encoded input image (PNG or JPG) |
-| `prompt` | string | `""` | Text prompt describing desired motion |
-| `duration_seconds` | int | `4` | Output video length in seconds (2–8) |
-| `fps` | int | `16` | Frames per second (8–30) |
-| `height` | int | `480` | Output video height (in 16px multiples) |
-| `width` | int | `832` | Output video width (in 16px multiples) |
-| `motion_strength` | float | `0.5` | Motion intensity (0.0–1.0) |
-| `seed` | int | `null` | Fixed seed for reproducibility (`-1` or `null` = random) |
+| `image_base64` | string | required | Base64 PNG/JPG input image |
+| `prompt` | string | `""` | Motion description |
+| `duration_seconds` | float | `4.0` | Video length in seconds (2.0-8.0) |
+| `fps` | int | `24` | Frames per second (16, 24) |
+| `motion_strength` | float | `0.8` | Motion intensity (0.1=subtle, 1.0=strong) |
+| `seed` | int | `-1` | Seed (-1 = random) |
+| `width` | int | `832` | Output width |
+| `height` | int | `480` | Output height |
+
+## Supported Resolutions
+
+| Resolution | Width | Height |
+|---|---|---|
+| 480p 16:9 | 832 | 480 |
+| 720p 16:9 | 1280 | 720 |
+| 480p 1:1 | 480 | 480 |
 
 ## GPU Requirements
 
-- **Recommended**: RTX 4090 (24 GB) / RTX 6000 Ada (48 GB) / L40S (48 GB)
-- **Minimum**: Any GPU with ≥16 GB VRAM (A6000, A6000+, etc.)
-- **CUDA**: 12.0+
-
-## Benchmark
-
-| GPU | Resolution | Duration | FPS | Time |
-|---|---|---|---|---|
-| RTX 4090 | 832×480 | 4s | 16 | ~12s |
-| RTX 4090 | 1280×720 | 8s | 24 | ~45s |
-| L40S | 1280×720 | 8s | 24 | ~35s |
+- Minimum: >=16GB VRAM
+- Recommended: RTX 4090, L40S, A6000 (>=24GB)
+- CUDA: 12.4+
 
 ## License
 
-Apache-2.0 — Wan 2.6 I2V weights and inference implementation.
+Apache-2.0. Based on [Wan-AI/Wan2.1-I2V](https://huggingface.co/Wan-AI).

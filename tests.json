@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Basic image animation",
+    "input": {
+      "image_url": "https://pub-796a08821c1c483aaf5e274e0d03e350.r2.dev/hub-icons/wan-i2v.svg",
+      "prompt": "Gentle camera pan to the right, cinematic",
+      "duration_seconds": 4,
+      "fps": 24,
+      "motion_strength": 0.7,
+      "seed": -1
+    }
+  }
+]
